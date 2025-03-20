@@ -1,10 +1,22 @@
-spring.ai.ollama:
-  base-url: http://localhost:11434
+spring.ai:
   chat:
-    options:
-      model: qwen2.5:latest
-      temperature: 0.7
-  init.pull-model-strategy: never
+    client.observations:
+      include-prompt: true
+      include-input: true
+  ollama:
+    base-url: http://localhost:11434
+    chat:
+      options:
+        model: qwen2.5:latest
+        temperature: 0.7
+    init.pull-model-strategy: never
+  vectorstore:
+    pgvector:
+    index-type: HNSW
+    distance-type: COSINE_DISTANCE
+    dimensions: 1536
+    batching-strategy: TOKEN_COUNT # Optional: Controls how documents are batched for embedding
+    max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
 
 logging:
   level:

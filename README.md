@@ -8,3 +8,4 @@
 - Functions as Tools
 - Tool Result Converter
 - Tool Context
+- Tool CallingManager
