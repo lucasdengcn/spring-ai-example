@@ -1,19 +1,61 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '3.4.3'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.example.demo'
 version = '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 }
 
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
-test {
-    useJUnitPlatform()
+ext {
+    set('springAiVersion', "1.0.0-M6")
 }
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+        all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+
+    dependencies {
+        //
+        implementation platform("org.springframework.ai:spring-ai-bom:${springAiVersion}")
+        //
+        implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter'
+        implementation 'org.springframework.ai:spring-ai-pgvector-store-spring-boot-starter'
+        //
+        compileOnly 'org.projectlombok:lombok:1.18.30'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        annotationProcessor 'org.projectlombok:lombok'
+        //
+        testImplementation platform('org.junit:junit-bom:5.10.0')
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+}
+

@@ -1,0 +1,29 @@
+spring.ai.ollama:
+  base-url: http://localhost:11434
+  chat:
+    options:
+      model: qwen2.5:latest
+      temperature: 0.7
+  init.pull-model-strategy: never
+
+logging:
+  level:
+    org.springframework.ai: debug
+
+spring.datasource:
+    url: jdbc:h2:mem:proposal-agent.db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE;AUTO_RECONNECT=TRUE;MODE=PostgreSQL;
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+#
+spring.jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        generate_statistics: true
+        jdbc:
+          batch_size: 10
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
