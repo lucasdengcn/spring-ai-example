@@ -1,4 +1,4 @@
-package com.example.demo.chat;
+package com.example.demo.sse;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 

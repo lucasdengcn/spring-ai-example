@@ -1,6 +1,8 @@
 package com.example.demo.chat;
 
 import com.example.demo.service.ChatService;
+import com.example.demo.sse.SseEmitterReference;
+import com.example.demo.sse.SseEmitterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,7 @@ public class AnalysisStreamController {
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter streamAnalysis(@RequestParam String clientId) {
         log.debug("Streaming analysis started for client: {}", clientId); // 使用debug级别日志减少I/O开销
-        SseEmitterService.SseEmitterReference emitterReference = sseEmitterService.createEmitter(clientId, emitter -> {
+        SseEmitterReference emitterReference = sseEmitterService.createEmitter(clientId, emitter -> {
             chatService.streamAnalysis(emitter);
             return true;
         });
