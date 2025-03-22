@@ -12,17 +12,27 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class AnalysisStreamController {
 
     private final ChatService chatService;
+    private final SseEmitterService sseEmitterService;
 
-    public AnalysisStreamController(ChatService chatService) {
+    public AnalysisStreamController(ChatService chatService, SseEmitterService sseEmitterService) {
         this.chatService = chatService;
+        this.sseEmitterService = sseEmitterService;
     }
 
-    @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
+    @CrossOrigin(origins = "localhost:3000", allowCredentials = "true", allowedHeaders = "*")
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter streamAnalysis() {
-        log.info("Streaming analysis...");
-        SseEmitter emitter = new SseEmitter();
-        chatService.streamAnalysis(emitter);
-        return emitter;
+    public SseEmitter streamAnalysis(@RequestParam String clientId) {
+        log.debug("Streaming analysis started for client: {}", clientId); // 使用debug级别日志减少I/O开销
+        SseEmitterService.SseEmitterReference emitterReference = sseEmitterService.createEmitter(clientId, emitter -> {
+            chatService.streamAnalysis(emitter);
+            return true;
+        });
+        return emitterReference.getEmitter();
+    }
+
+    @PostMapping("/sendMessage")
+    public void sendMessageToEmitter(@RequestParam String clientId, @RequestBody String message) {
+        sseEmitterService.sendMessageToEmitter(clientId, message);
+        log.debug("Message sent to client: {}", clientId);
     }
 }
