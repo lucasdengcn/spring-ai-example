@@ -60,3 +60,17 @@ The project uses Spring Boot with the following key configurations:
 - Vector store with PGVector
 - H2 database for development
 - CORS configuration for web access
+
+### SSE implementation
+
+an implementation of SSE (Server-Sent Events) for real-time updates. This is achieved by using the `SseEmitter` class.
+
+## Tecknology Stack
+
+- Spring Boot
+- Spring AI
+- Ollama AI Model
+- PGVector Vector Store
+- H2 Database
+- CORS Configuration
+- SSE (Server-Sent Events) for real-time updates
