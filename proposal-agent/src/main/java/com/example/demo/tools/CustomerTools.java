@@ -1,6 +1,6 @@
 package com.example.demo.tools;
 
-import com.example.demo.service.Customer;
+import com.example.demo.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ToolContext;
 import org.springframework.ai.tool.annotation.Tool;

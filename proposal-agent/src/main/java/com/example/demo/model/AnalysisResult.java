@@ -1,4 +1,7 @@
 package com.example.demo.model;
 
-public record AnalysisResult() {
+import java.math.BigDecimal;
+import java.util.Map;
+
+public record AnalysisResult(Map<String, Double> coverageDistribution, Map<String, Double> riskAssessment) {
 }

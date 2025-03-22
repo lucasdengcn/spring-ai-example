@@ -1,4 +1,4 @@
 package com.example.demo.model;
 
-public record ChatErrorMessage() {
+public record ChatErrorMessage(String error) {
 }

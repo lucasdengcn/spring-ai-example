@@ -1,4 +1,4 @@
 package com.example.demo.model;
 
-public record ChatMessage() {
+public record ChatMessage(String message) {
 }

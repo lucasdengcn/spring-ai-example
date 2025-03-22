@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Unit;
+import com.example.demo.model.WeatherRequest;
+import com.example.demo.model.WeatherResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.function.Function;

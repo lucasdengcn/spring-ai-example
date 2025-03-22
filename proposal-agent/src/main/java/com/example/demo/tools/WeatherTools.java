@@ -1,9 +1,8 @@
 package com.example.demo.tools;
 
-import com.example.demo.service.WeatherRequest;
-import com.example.demo.service.WeatherResponse;
+import com.example.demo.model.WeatherRequest;
+import com.example.demo.model.WeatherResponse;
 import com.example.demo.service.WeatherService;
-import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
