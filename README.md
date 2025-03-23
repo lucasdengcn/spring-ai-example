@@ -60,6 +60,9 @@ The project uses Spring Boot with the following key configurations:
 - Vector store with PGVector
 - H2 database for development
 - CORS configuration for web access
+- MCP Server implementation
+- MCP Client implementation
+- SSE implementation
 
 ### SSE implementation
 
