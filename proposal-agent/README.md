@@ -36,3 +36,16 @@ The module is configured to use:
 - H2 database for development
 - Undertow as the web server
 - Spring AI MCP client for AI integration
+
+## Project Structure
+
+The Java source code under `src/main/java/com/example/demo` is organized into the following packages:
+
+- `chat/`: Handles chat-related functionalities and interactions
+- `common/`: Contains common utilities, configurations and shared components
+- `model/`: Data models and DTOs for the application
+- `service/`: Business logic and service implementations
+- `sse/`: Server-Sent Events (SSE) implementation for real-time updates
+- `tool/`: MCP Tool implementations for AI-powered proposal generation
+
+The main application entry point is `DemoApplication.java`
