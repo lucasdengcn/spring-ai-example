@@ -1,4 +1,4 @@
-package com.example.demo.tools;
+package com.example.demo.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.InitializingBean;

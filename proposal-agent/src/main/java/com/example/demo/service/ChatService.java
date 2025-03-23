@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import com.example.demo.model.AnalysisResult;
 import com.example.demo.model.AnalysisResultMessage;
 import com.example.demo.model.ChatMessage;
-import com.example.demo.tools.CustomerTools;
+import com.example.demo.tool.CustomerTools;
 
 import reactor.core.publisher.Flux;
 

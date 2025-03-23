@@ -1,4 +1,4 @@
-package com.example.demo.tools;
+package com.example.demo.tool;
 
 import com.example.demo.model.Customer;
 import lombok.extern.slf4j.Slf4j;

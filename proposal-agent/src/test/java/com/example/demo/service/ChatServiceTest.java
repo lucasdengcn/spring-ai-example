@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.example.demo.model.AnalysisResultMessage;
 import com.example.demo.model.ChatMessage;
-import com.example.demo.tools.CustomerTools;
 
 import reactor.core.publisher.Flux;
 
