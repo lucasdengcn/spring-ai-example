@@ -1,8 +1,24 @@
 # Spring AI Example
 
-## Practices for Spring AI
+## Project Overview
 
-This project demonstrates various implementation patterns and best practices for using Spring AI tools.
+This project demonstrates various implementation patterns and best practices for using Spring AI tools. It consists of two main modules:
+
+- **mcp-server**: Implements the Model Context Protocol (MCP) server with both WebFlux and WebMvc SSE support
+- **proposal-agent**: Implements the MCP client for making AI-powered proposals
+
+## Project Structure
+
+```
+.
+├── mcp-server/           # MCP Server implementation
+│   ├── src/             # Server source code
+│   └── README.md        # Server documentation
+├── proposal-agent/      # MCP Client implementation
+│   ├── src/             # Client source code
+│   └── README.md        # Client documentation
+└── src/                 # Common source code
+```
 
 ### Tools Implementation Patterns
 
@@ -22,8 +38,8 @@ public String getCurrentDateTime() {
 Custom result converters can be implemented to control how tool results are formatted. Example from `CustomToolCallResultConverter`:
 
 ```java
-@Tool(name = "getCustomer", 
-      description = "Retrieve customer information", 
+@Tool(name = "getCustomer",
+      description = "Retrieve customer information",
       resultConverter = CustomToolCallResultConverter.class)
 public Customer getCustomer(String name, ToolContext context) {
     return new Customer(name, "example@email.com");
@@ -68,7 +84,7 @@ The project uses Spring Boot with the following key configurations:
 
 an implementation of SSE (Server-Sent Events) for real-time updates. This is achieved by using the `SseEmitter` class.
 
-## Tecknology Stack
+## Technology Stack
 
 - Spring Boot
 - Spring AI
