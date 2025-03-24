@@ -22,6 +22,7 @@ java {
 
 ext {
     set('springAiVersion', "1.0.0-M6")
+    set('pdfboxVersion', "3.0.4")
 }
 
 subprojects {
@@ -52,11 +53,10 @@ subprojects {
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
         testImplementation 'org.junit.jupiter:junit-jupiter'
         testImplementation 'io.projectreactor:reactor-test'
+        implementation "org.apache.pdfbox:pdfbox:${pdfboxVersion}"
     }
 
     test {
         useJUnitPlatform()
     }
-
 }
-
