@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Proposal Agent module implements the Model Context Protocol (MCP) client for making AI-powered proposals. It demonstrates how to integrate Spring AI with MCP client capabilities.
+The Proposal Agent module implements the Model Context Protocol (MCP) client for making AI-powered proposals. It demonstrates how to integrate Spring AI with MCP client capabilities and provides advanced PDF analysis features.
 
 ## Features
 
@@ -10,6 +10,12 @@ The Proposal Agent module implements the Model Context Protocol (MCP) client for
 - WebFlux SSE Client support
 - AI-powered proposal generation
 - Real-time updates via SSE
+- PDF Analysis capabilities:
+  - Text extraction with position information
+  - Image extraction and processing
+  - Table structure detection
+  - Header and footer detection
+  - Page-to-image conversion with Base64 encoding
 
 ## Dependencies
 

@@ -8,10 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.example.demo.pdf.ImageElement;
-import com.example.demo.pdf.PdfAnalysisService;
-import com.example.demo.pdf.TableElement;
-import com.example.demo.pdf.TextElement;
+import com.example.demo.pdf.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -56,4 +53,19 @@ class PdfAnalysisServiceTest {
     // Note: Our test PDF doesn't contain images, so the list should be empty
     // assertTrue(imageElements.isEmpty());
   }
+
+  @Test
+  void test_encodePageToBase64PNG() throws IOException {
+    String base64PNG = pdfAnalysisService.encodePageToBase64PNG(testPdfFile, 1);
+    assertNotNull(base64PNG);
+    System.out.println(base64PNG);
+  }
+
+  @Test
+  void test_generate_page_report() throws IOException {
+    PDFPageReport pdfPageReport = pdfAnalysisService.generatePageReport(testPdfFile, 1);
+    assertNotNull(pdfPageReport);
+    System.out.println(pdfPageReport);
+  }
+
 }
