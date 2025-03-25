@@ -4,10 +4,10 @@ public class PromptQueryBuilder {
 
     // retrieve plain text of PDF
     public static String buildPlainTextPrompt(String pdfText) {
-        StringBuilder prompt = new StringBuilder(1024);
-        prompt.append("Below is the image of one page of a document, as well as some raw textual content that was previously extracted for it. \n");
-        prompt.append("Just return the plain text representation of this document as if you were reading it naturally.\n");
-        prompt.append("Do not hallucinate.\n");
+        StringBuilder prompt = new StringBuilder(6000);
+        prompt.append("以下是PDF文档中某页的图片内容\n");
+        prompt.append("你需从视觉上读出图片上的文本、文本的结构\n");
+        prompt.append("不需要理解或猜测文本的含义或意义.\n");
         prompt.append("RAW_TEXT_START\n");
         prompt.append(pdfText);
         prompt.append("\nRAW_TEXT_END");

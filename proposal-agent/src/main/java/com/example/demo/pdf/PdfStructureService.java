@@ -2,6 +2,8 @@ package com.example.demo.pdf;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -220,7 +222,10 @@ public class PdfStructureService {
      */
     public byte[] encodePageToBase64PNG(File pdfFile, int pageNumber) throws IOException {
         try (PDDocument document = loadPdfDocument(pdfFile)) {
-            return renderPageToBase64PNG(pageNumber, document);
+            byte[] bytes = renderPageToBase64PNG(pageNumber, document);
+            // save bytes to a file
+            Files.write(Paths.get("page_" + pageNumber + ".png"), bytes);
+            return bytes;
         }
     }
 

@@ -4,21 +4,20 @@ import com.example.demo.pdf.PDFPageReport;
 import com.example.demo.pdf.PdfElement;
 import com.example.demo.pdf.PdfStructureService;
 import com.example.demo.prompt.PromptQueryBuilder;
+import com.openai.client.OpenAIClient;
+import com.openai.core.JsonValue;
+import com.openai.models.chat.completions.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.prompt.ChatOptions;
-import org.springframework.ai.model.Media;
-import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MimeTypeUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Slf4j
@@ -29,9 +28,42 @@ public class PdfVLInstructService {
 
     private final OpenAiChatModel openAiChatModel;
 
-    public PdfVLInstructService(PdfStructureService pdfStructureService, OpenAiChatModel openAiChatModel) {
+    private final OpenAIClient openAIClient;
+
+    public PdfVLInstructService(PdfStructureService pdfStructureService, OpenAiChatModel openAiChatModel, OpenAIClient openAIClient) {
         this.pdfStructureService = pdfStructureService;
         this.openAiChatModel = openAiChatModel;
+        this.openAIClient = openAIClient;
+    }
+
+    public void ocrImageFile(String imageFileName) throws IOException {
+        //Step1: read image file into byte[] and encode byte[] as bas64
+        File imageFile = new File(imageFileName);
+        byte[] imageData = Files.readAllBytes(Paths.get(imageFileName));
+        //
+        ChatCompletionContentPartText chatCompletionContentPartText = ChatCompletionContentPartText.builder()
+                .text("Read all the text in the image.")
+                .build();
+        ChatCompletionContentPartImage completionContentPartImage = ChatCompletionContentPartImage.builder()
+                .imageUrl(ChatCompletionContentPartImage.ImageUrl.builder().url(String.format("data:image/png;base64,%s", Base64.getEncoder().encodeToString(imageData))).build())
+                .putAdditionalProperty("min_pixels", JsonValue.from(28 * 28 * 4))
+                .putAdditionalProperty("max_pixels", JsonValue.from(28 * 28 * 1280))
+                .build();
+        //
+        List<ChatCompletionContentPart> parts = new ArrayList<>();
+        parts.add(ChatCompletionContentPart.ofText(chatCompletionContentPartText));
+        parts.add(ChatCompletionContentPart.ofImageUrl(completionContentPartImage));
+        //
+        ChatCompletionUserMessageParam userMessageParam = ChatCompletionUserMessageParam.builder()
+                .role(JsonValue.from("user"))
+                .contentOfArrayOfContentParts(parts)
+                .build();
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .addMessage(userMessageParam)
+                .model("qwen-vl-ocr")
+                .build();
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        log.info("Chat Response: {}", chatCompletion);
     }
 
     public void processPdf(String pdfFilePath, int pageNumber) throws IOException {
@@ -47,7 +79,7 @@ public class PdfVLInstructService {
         // log.info("Prompt Text: {}\n {}", promptText.length(), promptText);
 
         // Step 4: call LLM
-        String response = executeWithOCRModel(promptText, pageReport.getPageBase64PNG());
+        String response = executeWithVLModel(promptText, pageReport.getPageBase64PNG());
 
         // Step 5: Save response to resource folder
         saveResponseToFile(response);
@@ -66,37 +98,47 @@ public class PdfVLInstructService {
                 return Float.compare(e2.getY(), e1.getY());
             }
         });
-        StringBuilder sb = new StringBuilder(2048);
+        int maxTokens = 5000;
+        StringBuilder sb = new StringBuilder(maxTokens);
         int length = 0;
         for (PdfElement element : elements) {
             String s = element.toString();
             length += s.length() + 2;
-            if (length > 2048){
+            if (length > maxTokens){
                 break;
             }
             sb.append(s).append("\n");
         }
         //
+        log.info("Anchor Text: {}", sb.length());
         return sb.toString();
     }
 
-    private String executeWithOCRModel(String promptText, byte[] imageData) {
-        // 实现构建消息的逻辑
-        String model = "bsahane/Qwen2.5-VL-7B-Instruct:Q4_K_M_benxh";
-        OpenAiChatOptions chatOptions = OpenAiChatOptions.builder()
-                .temperature(0.0).maxTokens(3000).model(model)
+    private String executeWithVLModel(String promptText, byte[] imageData) {
+        ChatCompletionContentPartText chatCompletionContentPartText = ChatCompletionContentPartText.builder()
+                .text(promptText)
+                .build();
+        ChatCompletionContentPartImage completionContentPartImage = ChatCompletionContentPartImage.builder()
+                .imageUrl(ChatCompletionContentPartImage.ImageUrl.builder().url(String.format("data:image/png;base64,%s", Base64.getEncoder().encodeToString(imageData))).build())
+                .putAdditionalProperty("min_pixels", JsonValue.from(28 * 28 * 40))
+                .putAdditionalProperty("max_pixels", JsonValue.from(12845056))
                 .build();
         //
-        ChatClient chatClient = ChatClient.builder(openAiChatModel).defaultOptions(chatOptions).build();
-        String content = chatClient
-                .prompt()
-                .user(u -> {
-                    u.text(promptText).media(Media.builder().data(imageData).mimeType(MimeTypeUtils.IMAGE_PNG).build());
-                })
-                .call().content();
+        List<ChatCompletionContentPart> parts = new ArrayList<>();
+        parts.add(ChatCompletionContentPart.ofText(chatCompletionContentPartText));
+        parts.add(ChatCompletionContentPart.ofImageUrl(completionContentPartImage));
         //
-        log.info("Chat Response: {}", content);
-        return content;
+        ChatCompletionUserMessageParam userMessageParam = ChatCompletionUserMessageParam.builder()
+                .role(JsonValue.from("user"))
+                .contentOfArrayOfContentParts(parts)
+                .build();
+        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                .addMessage(userMessageParam)
+                .model("qwen-vl-plus-latest")
+                .build();
+        ChatCompletion chatCompletion = openAIClient.chat().completions().create(params);
+        log.info("Chat Response: {}", chatCompletion);
+        return chatCompletion.choices().getFirst().message().content().get();
     }
 
     private void saveResponseToFile(String response) throws IOException {
