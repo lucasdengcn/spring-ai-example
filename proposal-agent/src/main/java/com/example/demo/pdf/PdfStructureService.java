@@ -147,7 +147,10 @@ public class PdfAnalysisService {
         PDFPageReport report = new PDFPageReport();
         try (PDDocument document = loadPdfDocument(pdfFile)) {
             PDPage page = document.getPage(pageNumber - 1);
-
+            //
+            report.setPageNumber(pageNumber);
+            //
+            extractPageInfo(page, report);
             // Extract text elements
             List<TextElement> textElements = new ArrayList<>();
             PDFTextStripper stripper = createTextStripper(textElements, pageNumber, pageNumber);
@@ -178,8 +181,33 @@ public class PdfAnalysisService {
             headerFooterStripper.getText(document);
             report.setHeader(headerText.toString().trim());
             report.setFooter(footerText.toString().trim());
+            //
+            report.setPageBase64PNG(renderPageToBase64PNG(pageNumber, document));
         }
         return report;
+    }
+
+    /**
+     * PDF坐标系原点 (0,0) 通常位于页面左下角
+     * X轴向右延伸，Y轴向上延伸
+     * 元素的坐标位置（如文本、图片）可通过对应元素的 getX()/getY() 方法获取相对位置
+     * @param page
+     * @param report
+     */
+    private void extractPageInfo(PDPage page, PDFPageReport report) {
+        PDRectangle mediaBox = page.getMediaBox();
+        report.setWidth(mediaBox.getWidth());
+        report.setHeight(mediaBox.getHeight());
+        // 页面左下角坐标 (x0, y0)
+        float x0 = mediaBox.getLowerLeftX();
+        float y0 = mediaBox.getLowerLeftY();
+        report.setX0(x0);
+        report.setY0(y0);
+        // 页面右上角坐标 (x1, y1)
+        float x1 = mediaBox.getUpperRightX();
+        float y1 = mediaBox.getUpperRightY();
+        report.setX1(x1);
+        report.setY1(y1);
     }
 
     /**
@@ -192,12 +220,16 @@ public class PdfAnalysisService {
      */
     public String encodePageToBase64PNG(File pdfFile, int pageNumber) throws IOException {
         try (PDDocument document = loadPdfDocument(pdfFile)) {
-            PDFRenderer renderer = new PDFRenderer(document);
-            BufferedImage image = renderer.renderImage(pageNumber - 1);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, "png", baos);
-            return Base64.getEncoder().encodeToString(baos.toByteArray());
+            return renderPageToBase64PNG(pageNumber, document);
         }
+    }
+
+    private static String renderPageToBase64PNG(int pageNumber, PDDocument document) throws IOException {
+        PDFRenderer renderer = new PDFRenderer(document);
+        BufferedImage image = renderer.renderImage(pageNumber - 1);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", baos);
+        return Base64.getEncoder().encodeToString(baos.toByteArray());
     }
 
     private PDDocument loadPdfDocument(File pdfFile) throws IOException {
