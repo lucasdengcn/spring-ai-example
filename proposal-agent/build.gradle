@@ -5,6 +5,8 @@ plugins {
 
 dependencies {
     //
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+    //
     implementation 'org.springframework.ai:spring-ai-mcp-client-spring-boot-starter'
     // implementation 'org.springframework.ai:spring-ai-mcp-client-webflux-spring-boot-starter'
     //

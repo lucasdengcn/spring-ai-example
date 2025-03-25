@@ -1,44 +1,19 @@
 package com.example.demo.pdf;
 
-public class ImageElement {
-    private float x;
-    private float y;
-    private float width;
-    private float height;
-    private int pageNumber;
-    private byte[] imageData;
+import lombok.Getter;
+
+@Getter
+public class ImageElement extends PdfElement {
+    //
+    private final byte[] imageData;
 
     public ImageElement(float x, float y, float width, float height, int pageNumber, byte[] imageData) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.pageNumber = pageNumber;
+        super(x, y, width, height, pageNumber, PdfElementType.IMAGE);
         this.imageData = imageData;
     }
 
-    // Getters
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public int getPageNumber() {
-        return pageNumber;
-    }
-
-    public byte[] getImageData() {
-        return imageData;
+    @Override
+    public String toString() {
+        return String.format("[Image %.0fx%.0f to %.0fx%.0f]", x, y, x + width, y + height);
     }
 }

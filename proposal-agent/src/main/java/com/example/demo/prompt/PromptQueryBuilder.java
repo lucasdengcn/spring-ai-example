@@ -1,6 +1,6 @@
 package com.example.demo.prompt;
 
-public class PromptBuilder {
+public class PromptQueryBuilder {
 
     // retrieve plain text of PDF
     public static String buildPlainTextPrompt(String pdfText) {
@@ -10,7 +10,7 @@ public class PromptBuilder {
         prompt.append("Do not hallucinate.\n");
         prompt.append("RAW_TEXT_START\n");
         prompt.append(pdfText);
-        prompt.append("\nRAW_TEXT_END\n");
+        prompt.append("\nRAW_TEXT_END");
         return prompt.toString();
     }
 

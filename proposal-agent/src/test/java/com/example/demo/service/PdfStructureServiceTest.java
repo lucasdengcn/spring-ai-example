@@ -14,21 +14,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-class PdfAnalysisServiceTest {
+class PdfStructureServiceTest {
 
-  private PdfAnalysisService pdfAnalysisService;
+  private PdfStructureService pdfStructureService;
   private File testPdfFile;
 
   @BeforeEach
   void setUp() throws IOException {
-    pdfAnalysisService = new PdfAnalysisService();
+    pdfStructureService = new PdfStructureService();
     Resource resource = new ClassPathResource("test-proposal.pdf");
     testPdfFile = resource.getFile();
   }
 
   @Test
   void testExtractTextElements() throws IOException {
-    List<TextElement> textElements = pdfAnalysisService.extractTextElements(testPdfFile, 5, 5);
+    List<TextElement> textElements = pdfStructureService.extractTextElements(testPdfFile, 5, 5);
 
     assertNotNull(textElements);
     assertFalse(textElements.isEmpty());
@@ -37,7 +37,7 @@ class PdfAnalysisServiceTest {
 
   @Test
   void testExtractTableElements() throws IOException {
-    List<TableElement> tableElements = pdfAnalysisService.extractTableElements(testPdfFile, 5, 5);
+    List<TableElement> tableElements = pdfStructureService.extractTableElements(testPdfFile, 5, 5);
 
     assertNotNull(tableElements);
     // Note: Since table extraction is a simplified implementation, we're just
@@ -47,7 +47,7 @@ class PdfAnalysisServiceTest {
 
   @Test
   void testExtractImageElements() throws IOException {
-    List<ImageElement> imageElements = pdfAnalysisService.extractImageElements(testPdfFile, 1, 2);
+    List<ImageElement> imageElements = pdfStructureService.extractImageElements(testPdfFile, 1, 2);
 
     assertNotNull(imageElements);
     // Note: Our test PDF doesn't contain images, so the list should be empty
@@ -56,14 +56,13 @@ class PdfAnalysisServiceTest {
 
   @Test
   void test_encodePageToBase64PNG() throws IOException {
-    String base64PNG = pdfAnalysisService.encodePageToBase64PNG(testPdfFile, 1);
+    byte[] base64PNG = pdfStructureService.encodePageToBase64PNG(testPdfFile, 1);
     assertNotNull(base64PNG);
-    System.out.println(base64PNG);
   }
 
   @Test
   void test_generate_page_report() throws IOException {
-    PDFPageReport pdfPageReport = pdfAnalysisService.generatePageReport(testPdfFile, 1);
+    PDFPageReport pdfPageReport = pdfStructureService.generatePageReport(testPdfFile, 1);
     assertNotNull(pdfPageReport);
     System.out.println(pdfPageReport);
   }

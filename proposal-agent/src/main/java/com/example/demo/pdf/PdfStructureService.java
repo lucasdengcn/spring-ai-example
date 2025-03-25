@@ -36,7 +36,7 @@ import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
 
 @Service
-public class PdfAnalysisService {
+public class PdfStructureService {
 
     /**
      * Extracts text elements from a PDF file within the specified page range.
@@ -218,18 +218,18 @@ public class PdfAnalysisService {
      * @return a Base64-encoded string representing the PNG image of the page
      * @throws IOException if an I/O error occurs
      */
-    public String encodePageToBase64PNG(File pdfFile, int pageNumber) throws IOException {
+    public byte[] encodePageToBase64PNG(File pdfFile, int pageNumber) throws IOException {
         try (PDDocument document = loadPdfDocument(pdfFile)) {
             return renderPageToBase64PNG(pageNumber, document);
         }
     }
 
-    private static String renderPageToBase64PNG(int pageNumber, PDDocument document) throws IOException {
+    private static byte[] renderPageToBase64PNG(int pageNumber, PDDocument document) throws IOException {
         PDFRenderer renderer = new PDFRenderer(document);
         BufferedImage image = renderer.renderImage(pageNumber - 1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
-        return Base64.getEncoder().encodeToString(baos.toByteArray());
+        return baos.toByteArray();
     }
 
     private PDDocument loadPdfDocument(File pdfFile) throws IOException {
